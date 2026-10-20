@@ -1,0 +1,121 @@
+:root{
+  --desk:#142329;
+  --sheet:#eef2ef;
+  --ink:#15202a;
+  --muted:#5d6b70;
+  --teal:#1d6b66;
+  --rule:#c5d1cc;
+  --blue:#2236b8;
+  --glow:#7fd6c9;
+  --serif:"PT Serif","Times New Roman",Times,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--desk);color:var(--ink);
+  font:15.5px/1.62 var(--serif);
+  padding:10px 8px calc(28px + env(safe-area-inset-bottom));
+}
+#bar{position:fixed;top:0;left:0;height:3px;width:0;background:var(--glow);z-index:30}
+
+/* бланк */
+.sheet{
+  position:relative;max-width:680px;margin:0 auto;padding:30px 20px 24px;
+  background-color:var(--sheet);
+  background-image:
+    repeating-radial-gradient(circle at 0 0,transparent 0 9px,rgba(29,107,102,.05) 9px 10px),
+    repeating-radial-gradient(circle at 100% 100%,transparent 0 9px,rgba(29,107,102,.05) 9px 10px);
+  box-shadow:0 14px 40px rgba(0,0,0,.45);
+}
+.sheet::before{
+  content:"";position:absolute;inset:6px;pointer-events:none;
+  border:1px solid var(--teal);
+  box-shadow:inset 0 0 0 3px var(--sheet),inset 0 0 0 4px var(--teal);
+}
+
+.head{text-align:center;padding:6px 4px 14px}
+h1{margin:0 0 10px;font-size:22px;line-height:1.25;font-weight:700;letter-spacing:.02em;color:var(--teal)}
+.subtitle{margin:0 auto 12px;max-width:34em;font-style:italic;font-size:15px;line-height:1.5}
+.tip{margin:0;font:13px/1.4 var(--sans);color:var(--muted)}
+
+/* текст соглашения: номера пунктов вынесены в левое поле */
+h2{
+  display:grid;grid-template-columns:2.1rem 1fr;
+  margin:28px 0 10px;padding-top:12px;border-top:1px solid var(--rule);
+  font-size:15.5px;line-height:1.35;font-weight:700;color:var(--teal);
+}
+h2.plain{display:block}
+p{margin:0 0 9px}
+.cl{display:grid;grid-template-columns:2.1rem 1fr}
+.al{display:grid;grid-template-columns:1.3rem 1fr;margin:0 0 6px 2.1rem}
+.n{color:var(--teal);font-weight:700;font-variant-numeric:tabular-nums}
+.closing{font-weight:700;margin-top:16px;padding-top:12px;border-top:1px solid var(--rule)}
+
+/* подписание */
+.sign{margin-top:26px;border-top:2px solid var(--teal);font-family:var(--sans)}
+.sign h2{border-top:0;margin-top:16px;font-family:var(--serif)}
+.chk{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:11px 2px;border-bottom:1px solid var(--rule);
+  font:15px/1.4 var(--serif);cursor:pointer;
+}
+.chk input{
+  appearance:none;-webkit-appearance:none;flex:none;
+  width:22px;height:22px;margin:1px 0 0;
+  border:1.5px solid var(--ink);border-radius:2px;background:#fff;
+  display:grid;place-items:center;
+}
+.chk input:checked::after{content:"✓";font:700 19px/1 var(--sans);color:var(--blue)}
+
+.field{margin-top:22px}
+.lic{margin:0 0 10px;font:italic 14px/1.45 var(--serif)}
+.field>label>span,.row>span{display:block;font:13px/1.3 var(--sans);color:var(--muted)}
+#name{
+  width:100%;margin-top:2px;padding:6px 0;
+  border:0;border-bottom:1.5px solid var(--ink);border-radius:0;background:transparent;
+  font:19px var(--serif);color:var(--blue);
+}
+.row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.link{border:0;background:none;padding:4px 0;color:var(--teal);font:14px var(--sans);text-decoration:underline}
+
+.padwrap{position:relative;border:1px solid var(--rule);background:#fbfcfb}
+.padwrap::before{content:"×";position:absolute;left:10px;bottom:30px;font:22px/1 var(--serif);color:var(--teal);pointer-events:none}
+.padwrap::after{content:"";position:absolute;left:10px;right:10px;bottom:28px;border-top:1px solid var(--ink);opacity:.45;pointer-events:none}
+canvas{display:block;width:100%;height:auto;touch-action:none;cursor:crosshair}
+
+.date{margin:16px 0 0;font:14px var(--sans);color:var(--muted)}
+.go{
+  display:block;width:100%;margin-top:18px;padding:15px;
+  border:0;border-radius:3px;background:var(--blue);color:#fff;font:700 17px var(--sans);
+}
+.go:disabled{opacity:.4}
+.need{min-height:1.3em;margin:8px 0 0;text-align:center;font:13px var(--sans);color:var(--muted)}
+.notice{margin:2px 0 0;text-align:center;font:12.5px/1.4 var(--sans);color:var(--muted)}
+.foot{margin:22px 4px 0;font-size:12.5px;line-height:1.5;color:var(--muted);font-style:italic}
+
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+/* печать «ПРИНЯТО» */
+.veil{
+  position:fixed;inset:0;z-index:50;display:grid;place-items:center;
+  background:rgba(238,242,239,.88);opacity:0;pointer-events:none;transition:opacity .25s;
+}
+.stamped .veil{opacity:1;pointer-events:auto}
+.st{
+  padding:12px 22px 10px;text-align:center;font-weight:700;line-height:1.2;
+  border:5px double var(--blue);color:var(--blue);
+  filter:url(#rough);transform:rotate(-8deg) scale(2.8);opacity:0;
+}
+.st small{display:block;font-size:11px;letter-spacing:.02em;text-transform:uppercase}
+.st strong{display:block;margin:4px 0 6px;font-size:42px;letter-spacing:.04em}
+.st span{font-size:13px}
+.stamped .st{animation:thud .55s cubic-bezier(.2,.9,.3,1.2) .15s forwards}
+@keyframes thud{
+  0%{transform:rotate(-8deg) scale(2.8);opacity:0}
+  60%{opacity:1}
+  100%{transform:rotate(-8deg) scale(1);opacity:.94}
+}
+@media (prefers-reduced-motion:reduce){
+  .stamped .st{animation-duration:.01s;animation-delay:0s}
+}
