@@ -130,8 +130,10 @@
     document.body.classList.add('stamped');
     try { tg && tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
     setTimeout(() => {
-      if (tg && tg.initData) tg.sendData(data); // окно закроется само
-      else alert('Тест в браузере. Боту ушло бы:\n' + data);
+      // у Mini App с кнопки-клавиатуры initData пустой, поэтому смотрим на platform
+      const inTelegram = tg && tg.platform && tg.platform !== 'unknown';
+      if (inTelegram) tg.sendData(data); // окно закроется само
+      else alert('Тест в браузере (не в Telegram). Боту ушло бы:\n' + data);
     }, 1700);
   });
 })();
