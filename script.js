@@ -95,6 +95,7 @@
     if (nameInput.value.trim().length < 2) miss.push('имя');
     if (strokes.reduce((n, s) => n + s.length, 0) < 6) miss.push('подпись');
     go.disabled = miss.length > 0;
+    need.style.color = '';
     need.textContent = miss.length ? 'Осталось: ' + miss.join(', ') : '';
   }
   checks.forEach((c) => c.addEventListener('change', validate));
@@ -122,18 +123,46 @@
     return data;
   }
 
+  const VER = 'v3';
+  const diag = () => '[' + VER + ' sdk=' + (tg ? 'да' : 'нет') + ' platform=' + (tg ? tg.platform : '-') + ']';
+
+  // внутри Telegram? initData у кнопки-клавиатуры пустой, поэтому смотрим на другие признаки
+  const inTelegram = () =>
+    !!(tg && tg.platform && tg.platform !== 'unknown') ||
+    !!window.TelegramWebviewProxy ||
+    location.hash.indexOf('tgWebApp') > -1;
+
+  // отправка боту; запасной путь — если скрипт telegram-web-app.js не загрузился
+  function deliver(data) {
+    if (tg && tg.sendData) { tg.sendData(data); return true; }
+    if (window.TelegramWebviewProxy) {
+      TelegramWebviewProxy.postEvent('web_app_data_send', JSON.stringify({ data }));
+      return true;
+    }
+    return false;
+  }
+
   let sent = false;
   go.addEventListener('click', () => {
     if (go.disabled || sent) return;
+    if (!inTelegram()) {
+      need.style.color = '#9b1c1c';
+      need.textContent = 'Подпись не дойдёт: откройте соглашение кнопкой в чате с ботом, а не по ссылке. ' + diag();
+      return;
+    }
     sent = true;
     const data = pack();
     document.body.classList.add('stamped');
     try { tg && tg.HapticFeedback && tg.HapticFeedback.notificationOccurred('success'); } catch (e) {}
     setTimeout(() => {
-      // у Mini App с кнопки-клавиатуры initData пустой, поэтому смотрим на platform
-      const inTelegram = tg && tg.platform && tg.platform !== 'unknown';
-      if (inTelegram) tg.sendData(data); // окно закроется само
-      else alert('Тест в браузере (не в Telegram). Боту ушло бы:\n' + data);
+      let ok = false;
+      try { ok = deliver(data); } catch (e) {}
+      if (!ok) { // окно при успехе закрывается само, сюда доходим только при сбое
+        document.body.classList.remove('stamped');
+        sent = false;
+        need.style.color = '#9b1c1c';
+        need.textContent = 'Не удалось отправить подпись. ' + diag();
+      }
     }, 1700);
   });
 })();
